@@ -1,0 +1,62 @@
+.media-card {
+  width: 160px;
+  max-width: 45vw;
+  background-color: #1a1a2e;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  flex-shrink: 0;
+  min-height: 300px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 400px) {
+  .media-card {
+    width: 120px;
+    max-width: 40vw;
+  }
+}
+
+.media-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.media-card:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.media-card:hover img {
+  transform: scale(1.05);
+}
+
+.card-info {
+  padding: 0.5rem;
+}
+
+.media-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  padding: 0 0.5rem;
+}
+
+.media-card .rating {
+  margin-top: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.media-type {
+  display: inline-block;
+  margin-top: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  background-color: #16213e;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
