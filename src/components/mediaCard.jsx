@@ -15,12 +15,15 @@ Chaque MediaCard doit afficher :
 
 import "./mediaCard.css";
 
-export default function MediaCard({ title, cover, rating, type }) {
+export default function MediaCard({ title, cover, rating, type, genres = [] }) {
+  const genreLabel = genres.length > 0 ? genres.slice(0, 2).join(" · ") : null;
+
   return (
     <div className="media-card">
       <img src={cover} alt={title} />
       <div className="card-info">
         <h3>{title}</h3>
+        {genreLabel && <p className="media-genres">{genreLabel}</p>}
         <p className="rating">⭐ {rating}</p>
         <span className="media-type">{type === "movie" ? "Film" : "Série"}</span>
       </div>

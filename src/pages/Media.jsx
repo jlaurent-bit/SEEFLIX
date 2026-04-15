@@ -33,14 +33,17 @@ const Media = () => {
   }, []);
 
   const handleSearch = (query) => {
-    if (query.trim() === "") {
+    const cleanedQuery = query.trim().toLowerCase();
+
+    if (cleanedQuery === "") {
       setFilteredMedia(media);
       return;
     }
 
     const filtered = media.filter((item) =>
-      item.title.toLowerCase().includes(query.toLowerCase())
+      item.title.toLowerCase().includes(cleanedQuery)
     );
+
     setFilteredMedia(filtered);
   };
 

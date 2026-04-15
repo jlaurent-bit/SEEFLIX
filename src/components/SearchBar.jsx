@@ -13,8 +13,8 @@ export default function SearchBar({ onSearch }) {
   return (
     <div className="search-bar">
       <input
-        type="text"
-        placeholder="Search for movies or TV shows..."
+        type="search"
+        placeholder="Search by title..."
         value={query}
         onChange={handleChange}
       />

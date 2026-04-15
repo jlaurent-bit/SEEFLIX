@@ -2,6 +2,11 @@ const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
+const genreCache = {
+  movie: null,
+  tv: null,
+};
+
 function buildUrl(path, query = {}) {
   if (!API_KEY) {
     throw new Error("TMDB API key missing. Add VITE_TMDB_API_KEY to your .env file.");
@@ -11,8 +16,9 @@ function buildUrl(path, query = {}) {
   return `${BASE_URL}${path}?${params.toString()}`;
 }
 
-function normalizeMediaItem(item, typeOverride) {
+function normalizeMediaItem(item, genreMap, typeOverride) {
   const mediaType = typeOverride || item.media_type || (item.title ? "movie" : "tv");
+  const genres = (item.genre_ids || []).map((genreId) => genreMap?.[genreId]).filter(Boolean);
 
   return {
     id: `${item.id}-${mediaType}`,
@@ -24,6 +30,7 @@ function normalizeMediaItem(item, typeOverride) {
       : "",
     rating: item.vote_average ?? "",
     type: mediaType === "tv" ? "tv" : "movie",
+    genres,
   };
 }
 
@@ -35,20 +42,42 @@ async function fetchTmdb(path, query = {}) {
   return response.json();
 }
 
+async function fetchGenreMap(mediaType) {
+  if (genreCache[mediaType]) {
+    return genreCache[mediaType];
+  }
+
+  const data = await fetchTmdb(`/genre/${mediaType}/list`, { language: "fr-FR" });
+  const map = (data.genres || []).reduce((acc, genre) => {
+    acc[genre.id] = genre.name;
+    return acc;
+  }, {});
+
+  genreCache[mediaType] = map;
+  return map;
+}
+
 export async function fetchTrendingMovies() {
+  const genreMap = await fetchGenreMap("movie");
   const data = await fetchTmdb("/trending/movie/week");
-  return (data.results || []).map((item) => normalizeMediaItem(item, "movie"));
+  return (data.results || []).map((item) => normalizeMediaItem(item, genreMap, "movie"));
 }
 
 export async function fetchTrendingTVShows() {
+  const genreMap = await fetchGenreMap("tv");
   const data = await fetchTmdb("/trending/tv/week");
-  return (data.results || []).map((item) => normalizeMediaItem(item, "tv"));
+  return (data.results || []).map((item) => normalizeMediaItem(item, genreMap, "tv"));
 }
 
 export async function searchTMDB(query) {
   if (!query.trim()) {
     return [];
   }
+
+  const [movieGenreMap, tvGenreMap] = await Promise.all([
+    fetchGenreMap("movie"),
+    fetchGenreMap("tv"),
+  ]);
 
   const data = await fetchTmdb("/search/multi", {
     query,
@@ -58,5 +87,11 @@ export async function searchTMDB(query) {
 
   return (data.results || [])
     .filter((item) => item.media_type === "movie" || item.media_type === "tv")
-    .map(normalizeMediaItem);
+    .map((item) =>
+      normalizeMediaItem(
+        item,
+        item.media_type === "tv" ? tvGenreMap : movieGenreMap,
+        item.media_type
+      )
+    );
 }

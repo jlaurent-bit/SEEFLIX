@@ -1,32 +1,75 @@
 .media-list {
   padding: 2rem 1rem;
-  /* limit list width to match main container if needed */
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.media-list h2 {
+.media-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.media-list h2 {
+  margin: 0;
   font-size: 1.5rem;
   color: var(--primary-color);
+}
+
+.media-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scroll-button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background-color: #0f0f23;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.scroll-button:hover:not(:disabled) {
+  background-color: #00d4ff;
+  color: #0a0a14;
+}
+
+.scroll-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.page-indicator {
+  color: #cccccc;
+  font-size: 0.9rem;
+}
+
+.media-items-wrapper {
+  overflow: hidden;
 }
 
 .media-items {
   display: flex;
   gap: 1rem;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-  scroll-behavior: smooth;
-  align-items: flex-start; /* keep cards uniform height */
-  /* optional transition on scroll background or similar */
+  align-items: stretch;
+  transition: transform 0.4s ease;
+  will-change: transform;
 }
 
-.media-items::-webkit-scrollbar {
-  height: 8px;
-}
-
-.media-items::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border-radius: 4px;
+@media (max-width: 900px) {
+  .media-items {
+    flex-wrap: nowrap;
+  }
 }
 
