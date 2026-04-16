@@ -58,3 +58,33 @@
   font-size: 0.75rem;
   text-transform: uppercase;
 }
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.card-button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  background-color: #0f0f23;
+  color: #ffffff;
+}
+
+.card-button:hover {
+  transform: translateY(-1px);
+  background-color: #00d4ff;
+  color: #0a0a14;
+}
+
+.favorite-button.active {
+  background-color: #ff3d67;
+  color: #ffffff;
+}

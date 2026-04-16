@@ -22,6 +22,7 @@ function normalizeMediaItem(item, genreMap, typeOverride) {
 
   return {
     id: `${item.id}-${mediaType}`,
+    rawId: item.id,
     title: item.title || item.name || "Untitled",
     cover: item.poster_path
       ? `${IMAGE_BASE_URL}${item.poster_path}`
@@ -31,6 +32,33 @@ function normalizeMediaItem(item, genreMap, typeOverride) {
     rating: item.vote_average ?? "",
     type: mediaType === "tv" ? "tv" : "movie",
     genres,
+  };
+}
+
+function normalizeMediaDetailItem(item, mediaType) {
+  const genres = (item.genres || []).map((genre) => genre.name).filter(Boolean);
+  return {
+    id: `${item.id}-${mediaType}`,
+    rawId: item.id,
+    title: item.title || item.name || "Untitled",
+    cover: item.poster_path
+      ? `${IMAGE_BASE_URL}${item.poster_path}`
+      : item.backdrop_path
+      ? `${IMAGE_BASE_URL}${item.backdrop_path}`
+      : "",
+    rating: item.vote_average ?? "",
+    type: mediaType === "tv" ? "tv" : "movie",
+    genres,
+    overview: item.overview || "",
+    releaseDate: item.release_date || item.first_air_date || "",
+    runtime:
+      item.runtime ??
+      (Array.isArray(item.episode_run_time) && item.episode_run_time.length > 0
+        ? item.episode_run_time[0]
+        : null),
+    homepage: item.homepage || "",
+    status: item.status || "",
+    voteCount: item.vote_count ?? 0,
   };
 }
 
@@ -94,4 +122,10 @@ export async function searchTMDB(query) {
         item.media_type
       )
     );
+}
+
+export async function fetchMediaDetails(rawId, mediaType) {
+  const type = mediaType === "tv" ? "tv" : "movie";
+  const data = await fetchTmdb(`/${type}/${rawId}`, { language: "fr-FR" });
+  return normalizeMediaDetailItem(data, type);
 }

@@ -13,7 +13,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import MediaCard from "./mediaCard";
 import "./mediaList.css";
 
-export default function MediaList({ title, items }) {
+export default function MediaList({
+  title,
+  items,
+  onCardClick,
+  onToggleFavorite,
+  favoriteIds,
+}) {
   const wrapperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardWidth, setCardWidth] = useState(0);
@@ -86,6 +92,9 @@ export default function MediaList({ title, items }) {
               rating={item.rating}
               type={item.type}
               genres={item.genres}
+              onOpenDetails={() => onCardClick?.(item)}
+              onToggleFavorite={() => onToggleFavorite?.(item)}
+              isFavorite={favoriteIds?.has(item.id)}
             />
           ))}
         </div>

@@ -15,7 +15,16 @@ Chaque MediaCard doit afficher :
 
 import "./mediaCard.css";
 
-export default function MediaCard({ title, cover, rating, type, genres = [] }) {
+export default function MediaCard({
+  title,
+  cover,
+  rating,
+  type,
+  genres = [],
+  onOpenDetails,
+  onToggleFavorite,
+  isFavorite,
+}) {
   const genreLabel = genres.length > 0 ? genres.slice(0, 2).join(" · ") : null;
 
   return (
@@ -26,6 +35,22 @@ export default function MediaCard({ title, cover, rating, type, genres = [] }) {
         {genreLabel && <p className="media-genres">{genreLabel}</p>}
         <p className="rating">⭐ {rating}</p>
         <span className="media-type">{type === "movie" ? "Film" : "Série"}</span>
+        <div className="card-actions">
+          {onOpenDetails && (
+            <button type="button" className="card-button" onClick={onOpenDetails}>
+              Détails
+            </button>
+          )}
+          {onToggleFavorite && (
+            <button
+              type="button"
+              className={`card-button favorite-button ${isFavorite ? "active" : ""}`}
+              onClick={onToggleFavorite}
+            >
+              {isFavorite ? "♥ Favori" : "♡ Favori"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
